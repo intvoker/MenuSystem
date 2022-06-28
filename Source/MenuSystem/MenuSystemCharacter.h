@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "OnlineSubsystem.h"
 #include "MenuSystemCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -26,7 +27,6 @@ public:
 	float TurnRateGamepad;
 
 protected:
-
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
@@ -61,5 +61,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-};
 
+public:
+	IOnlineSessionPtr OnlineSessionInterface;
+};
