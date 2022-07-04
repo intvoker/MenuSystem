@@ -116,6 +116,8 @@ void AMenuSystemCharacter::CreateGameSession()
 	SessionSettings->bShouldAdvertise = true;
 	SessionSettings->bUsesPresence = true;
 	SessionSettings->bUseLobbiesIfAvailable = true;
+	SessionSettings->Set(FName("MatchType"), FString("FreeForAll"),
+	                     EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 	OnlineSessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, *SessionSettings);
@@ -149,6 +151,11 @@ void AMenuSystemCharacter::OnCreateSessionComplete(FName SessionName, bool bWasS
 			                                 FString::Printf(TEXT("Created session: %s"), *SessionName.ToString()),
 			                                 false);
 		}
+
+		if (UWorld* World = GetWorld())
+		{
+			World->ServerTravel(FString("/Game/ThirdPerson/Maps/LobbyMap?listen"));
+		}
 	}
 	else
 	{
@@ -163,6 +170,11 @@ void AMenuSystemCharacter::OnCreateSessionComplete(FName SessionName, bool bWasS
 
 void AMenuSystemCharacter::OnFindSessionsComplete(bool bWasSuccessful)
 {
+	if (!OnlineSessionInterface.IsValid())
+	{
+		return;
+	}
+
 	for (auto Result : SessionSearch->SearchResults)
 	{
 		FString Id = Result.GetSessionIdStr();
@@ -171,8 +183,49 @@ void AMenuSystemCharacter::OnFindSessionsComplete(bool bWasSuccessful)
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Cyan,
-											 FString::Printf(TEXT("Id: %s, User: %s"), *Id, *User),
-											 false);
+			                                 FString::Printf(TEXT("Id: %s, User: %s"), *Id, *User),
+			                                 false);
+		}
+
+		FString MatchType;
+		Result.Session.SessionSettings.Get(FName("MatchType"), MatchType);
+
+		if (MatchType == FString("FreeForAll"))
+		{
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Cyan,
+				                                 FString::Printf(TEXT("MatchType: %s"), *MatchType),
+				                                 false);
+			}
+
+			OnlineSessionInterface->AddOnJoinSessionCompleteDelegate_Handle(JoinSessionCompleteDelegate);
+
+			const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+			OnlineSessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, Result);
+		}
+	}
+}
+
+void AMenuSystemCharacter::OnJoinSessionsComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	if (!OnlineSessionInterface.IsValid())
+	{
+		return;
+	}
+
+	if (FString ConnectInfo; OnlineSessionInterface->GetResolvedConnectString(NAME_GameSession, ConnectInfo))
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow,
+			                                 FString::Printf(TEXT("ConnectInfo: %s"), *ConnectInfo),
+			                                 false);
+		}
+
+		if (APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController())
+		{
+			PlayerController->ClientTravel(ConnectInfo, ETravelType::TRAVEL_Absolute);
 		}
 	}
 }
