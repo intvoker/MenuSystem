@@ -74,7 +74,7 @@ protected:
 
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
 	void OnFindSessionsComplete(bool bWasSuccessful);
-	void OnJoinSessionsComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 
 private:
 	FOnCreateSessionCompleteDelegate CreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(
@@ -85,5 +85,5 @@ private:
 	TSharedPtr<FOnlineSessionSearch> SessionSearch;
 
 	FOnJoinSessionCompleteDelegate JoinSessionCompleteDelegate = FOnJoinSessionCompleteDelegate::CreateUObject(
-		this, &ThisClass::OnJoinSessionsComplete);
+		this, &ThisClass::OnJoinSessionComplete);
 };

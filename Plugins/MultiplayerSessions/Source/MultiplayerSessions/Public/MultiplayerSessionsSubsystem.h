@@ -17,7 +17,39 @@ class MULTIPLAYERSESSIONS_API UMultiplayerSessionsSubsystem : public UGameInstan
 public:
 	UMultiplayerSessionsSubsystem();
 
+	void CreateSession(int32 NumPublicConnections, FString MatchType);
+	void FindSessions(int32 MaxSearchResults);
+	void JoinSession(const FOnlineSessionSearchResult& SearchResult);
+	void StartSession();
+	void DestroySession();
+
 protected:
+	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
+	void OnFindSessionsComplete(bool bWasSuccessful);
+	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+	void OnStartSessionComplete(FName SessionName, bool bWasSuccessful);
+	void OnDestroySessionComplete(FName SessionName, bool bWasSuccessful);
+
 private:
 	IOnlineSessionPtr OnlineSessionInterface;
+
+	FOnCreateSessionCompleteDelegate CreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(
+		this, &ThisClass::OnCreateSessionComplete);
+	FDelegateHandle CreateSessionCompleteDelegateHandle;
+
+	FOnFindSessionsCompleteDelegate FindSessionsCompleteDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(
+		this, &ThisClass::OnFindSessionsComplete);
+	FDelegateHandle FindSessionsCompleteDelegateHandle;
+
+	FOnJoinSessionCompleteDelegate JoinSessionCompleteDelegate = FOnJoinSessionCompleteDelegate::CreateUObject(
+		this, &ThisClass::OnJoinSessionComplete);
+	FDelegateHandle JoinSessionCompleteDelegateHandle;
+
+	FOnStartSessionCompleteDelegate StartSessionCompleteDelegate = FOnStartSessionCompleteDelegate::CreateUObject(
+		this, &ThisClass::OnStartSessionComplete);
+	FDelegateHandle StartSessionCompleteDelegateHandle;
+
+	FOnDestroySessionCompleteDelegate DestroySessionCompleteDelegate = FOnDestroySessionCompleteDelegate::CreateUObject(
+		this, &ThisClass::OnDestroySessionComplete);
+	FDelegateHandle DestroySessionCompleteDelegateHandle;
 };

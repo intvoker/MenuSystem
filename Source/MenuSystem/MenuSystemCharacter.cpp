@@ -207,7 +207,7 @@ void AMenuSystemCharacter::OnFindSessionsComplete(bool bWasSuccessful)
 	}
 }
 
-void AMenuSystemCharacter::OnJoinSessionsComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+void AMenuSystemCharacter::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
 	if (!OnlineSessionInterface.IsValid())
 	{
