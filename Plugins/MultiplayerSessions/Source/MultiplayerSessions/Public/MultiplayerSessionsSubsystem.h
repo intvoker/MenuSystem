@@ -32,6 +32,7 @@ protected:
 
 private:
 	IOnlineSessionPtr OnlineSessionInterface;
+	TSharedPtr<FOnlineSessionSettings> SessionSettings;
 
 	FOnCreateSessionCompleteDelegate CreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(
 		this, &ThisClass::OnCreateSessionComplete);
