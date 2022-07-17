@@ -18,7 +18,7 @@ class MULTIPLAYERSESSIONS_API UMenu : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void MenuSetup();
+	void MenuSetup(int32 NumPublicConnectionsParam = 4, FString MatchTypeParam = FString("FreeForAll"));
 
 protected:
 	virtual bool Initialize() override;
@@ -40,4 +40,7 @@ private:
 	void JoinButtonClicked();
 	
 	void MenuTearDown();
+
+	int32 NumPublicConnections = 4;
+	FString MatchType = FString("FreeForAll");
 };
