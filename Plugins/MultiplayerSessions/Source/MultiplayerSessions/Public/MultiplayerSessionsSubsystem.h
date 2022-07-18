@@ -9,6 +9,15 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMssOnCreateSessionCompleteDelegate, bool, bWasSuccessful);
 
+DECLARE_MULTICAST_DELEGATE_TwoParams(FMssOnFindSessionsCompleteDelegate,
+                                     TArray<FOnlineSessionSearchResult>& SearchResults, bool bWasSuccessful);
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FMssOnJoinSessionCompleteDelegate, EOnJoinSessionCompleteResult::Type Result)
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMssOnStartSessionCompleteDelegate, bool, bWasSuccessful);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMssOnDestroySessionCompleteDelegate, bool, bWasSuccessful);
+
 /**
  * 
  */
@@ -26,6 +35,10 @@ public:
 	void DestroySession();
 
 	FMssOnCreateSessionCompleteDelegate MssOnCreateSessionCompleteDelegate;
+	FMssOnFindSessionsCompleteDelegate MssOnFindSessionsCompleteDelegate;
+	FMssOnJoinSessionCompleteDelegate MssOnJoinSessionCompleteDelegate;
+	FMssOnStartSessionCompleteDelegate MssOnStartSessionCompleteDelegate;
+	FMssOnDestroySessionCompleteDelegate MssOnDestroySessionCompleteDelegate;
 
 protected:
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
@@ -54,7 +67,8 @@ private:
 		this, &ThisClass::OnStartSessionComplete);
 	FDelegateHandle OnStartSessionCompleteDelegateHandle;
 
-	FOnDestroySessionCompleteDelegate OnDestroySessionCompleteDelegate = FOnDestroySessionCompleteDelegate::CreateUObject(
-		this, &ThisClass::OnDestroySessionComplete);
+	FOnDestroySessionCompleteDelegate OnDestroySessionCompleteDelegate =
+		FOnDestroySessionCompleteDelegate::CreateUObject(
+			this, &ThisClass::OnDestroySessionComplete);
 	FDelegateHandle OnDestroySessionCompleteDelegateHandle;
 };

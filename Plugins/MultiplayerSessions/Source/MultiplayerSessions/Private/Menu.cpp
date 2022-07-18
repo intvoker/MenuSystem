@@ -35,7 +35,15 @@ void UMenu::MenuSetup(int32 NumPublicConnectionsParam, FString MatchTypeParam)
 	if (MultiplayerSessionsSubsystem)
 	{
 		MultiplayerSessionsSubsystem->MssOnCreateSessionCompleteDelegate.AddDynamic(
-			this, &ThisClass::UMenu::MssOnCreateSessionComplete);
+			this, &ThisClass::MssOnCreateSessionComplete);
+		MultiplayerSessionsSubsystem->MssOnFindSessionsCompleteDelegate.AddUObject(
+			this, &ThisClass::MssOnFindSessionsComplete);
+		MultiplayerSessionsSubsystem->MssOnJoinSessionCompleteDelegate.AddUObject(
+			this, &ThisClass::MssOnJoinSessionComplete);
+		MultiplayerSessionsSubsystem->MssOnStartSessionCompleteDelegate.AddDynamic(
+			this, &ThisClass::MssOnStartSessionComplete);
+		MultiplayerSessionsSubsystem->MssOnDestroySessionCompleteDelegate.AddDynamic(
+			this, &ThisClass::MssOnDestroySessionComplete);
 	}
 }
 
@@ -89,6 +97,22 @@ void UMenu::MssOnCreateSessionComplete(bool bWasSuccessful)
 			                                 FString(TEXT("Create Session Failed")), false);
 		}
 	}
+}
+
+void UMenu::MssOnFindSessionsComplete(TArray<FOnlineSessionSearchResult>& SearchResults, bool bWasSuccessful)
+{
+}
+
+void UMenu::MssOnJoinSessionComplete(EOnJoinSessionCompleteResult::Type Result)
+{
+}
+
+void UMenu::MssOnStartSessionComplete(bool bWasSuccessful)
+{
+}
+
+void UMenu::MssOnDestroySessionComplete(bool bWasSuccessful)
+{
 }
 
 void UMenu::HostButtonClicked()

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "Menu.generated.h"
 
 class UMultiplayerSessionsSubsystem;
@@ -26,6 +27,12 @@ protected:
 
 	UFUNCTION()
 	void MssOnCreateSessionComplete(bool bWasSuccessful);
+	void MssOnFindSessionsComplete(TArray<FOnlineSessionSearchResult>& SearchResults, bool bWasSuccessful);
+	void MssOnJoinSessionComplete(EOnJoinSessionCompleteResult::Type Result);
+	UFUNCTION()
+	void MssOnStartSessionComplete(bool bWasSuccessful);
+	UFUNCTION()
+	void MssOnDestroySessionComplete(bool bWasSuccessful);
 
 private:
 	UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem;
