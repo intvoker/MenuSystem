@@ -24,6 +24,9 @@ protected:
 	virtual bool Initialize() override;
 	virtual void OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) override;
 
+	UFUNCTION()
+	void MssOnCreateSessionComplete(bool bWasSuccessful);
+
 private:
 	UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem;
 
