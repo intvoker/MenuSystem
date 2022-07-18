@@ -26,8 +26,8 @@ void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPublicConnections, FS
 		OnlineSessionInterface->DestroySession(NAME_GameSession);
 	}
 
-	CreateSessionCompleteDelegateHandle = OnlineSessionInterface->AddOnCreateSessionCompleteDelegate_Handle(
-		CreateSessionCompleteDelegate);
+	OnCreateSessionCompleteDelegateHandle = OnlineSessionInterface->AddOnCreateSessionCompleteDelegate_Handle(
+		OnCreateSessionCompleteDelegate);
 
 	SessionSettings = MakeShareable(new FOnlineSessionSettings());
 	SessionSettings->bIsLANMatch = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
@@ -43,8 +43,8 @@ void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPublicConnections, FS
 	if (!OnlineSessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession,
 	                                           *SessionSettings))
 	{
-		OnlineSessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegateHandle);
-		MssCreateSessionCompleteDelegate.Broadcast(false);
+		OnlineSessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegateHandle);
+		MssOnCreateSessionCompleteDelegate.Broadcast(false);
 	}
 }
 
@@ -71,8 +71,8 @@ void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(FName SessionName, b
 		return;
 	}
 
-	OnlineSessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegateHandle);
-	MssCreateSessionCompleteDelegate.Broadcast(bWasSuccessful);
+	OnlineSessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegateHandle);
+	MssOnCreateSessionCompleteDelegate.Broadcast(bWasSuccessful);
 }
 
 void UMultiplayerSessionsSubsystem::OnFindSessionsComplete(bool bWasSuccessful)

@@ -34,7 +34,7 @@ void UMenu::MenuSetup(int32 NumPublicConnectionsParam, FString MatchTypeParam)
 
 	if (MultiplayerSessionsSubsystem)
 	{
-		MultiplayerSessionsSubsystem->MssCreateSessionCompleteDelegate.AddDynamic(
+		MultiplayerSessionsSubsystem->MssOnCreateSessionCompleteDelegate.AddDynamic(
 			this, &ThisClass::UMenu::MssOnCreateSessionComplete);
 	}
 }

@@ -7,7 +7,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "MultiplayerSessionsSubsystem.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMssCreateSessionCompleteDelegate, bool, bWasSuccessful);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMssOnCreateSessionCompleteDelegate, bool, bWasSuccessful);
 
 /**
  * 
@@ -25,7 +25,7 @@ public:
 	void StartSession();
 	void DestroySession();
 
-	FMssCreateSessionCompleteDelegate MssCreateSessionCompleteDelegate;
+	FMssOnCreateSessionCompleteDelegate MssOnCreateSessionCompleteDelegate;
 
 protected:
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
@@ -38,23 +38,23 @@ private:
 	IOnlineSessionPtr OnlineSessionInterface;
 	TSharedPtr<FOnlineSessionSettings> SessionSettings;
 
-	FOnCreateSessionCompleteDelegate CreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(
+	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(
 		this, &ThisClass::OnCreateSessionComplete);
-	FDelegateHandle CreateSessionCompleteDelegateHandle;
+	FDelegateHandle OnCreateSessionCompleteDelegateHandle;
 
-	FOnFindSessionsCompleteDelegate FindSessionsCompleteDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(
+	FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(
 		this, &ThisClass::OnFindSessionsComplete);
-	FDelegateHandle FindSessionsCompleteDelegateHandle;
+	FDelegateHandle OnFindSessionsCompleteDelegateHandle;
 
-	FOnJoinSessionCompleteDelegate JoinSessionCompleteDelegate = FOnJoinSessionCompleteDelegate::CreateUObject(
+	FOnJoinSessionCompleteDelegate OnJoinSessionCompleteDelegate = FOnJoinSessionCompleteDelegate::CreateUObject(
 		this, &ThisClass::OnJoinSessionComplete);
-	FDelegateHandle JoinSessionCompleteDelegateHandle;
+	FDelegateHandle OnJoinSessionCompleteDelegateHandle;
 
-	FOnStartSessionCompleteDelegate StartSessionCompleteDelegate = FOnStartSessionCompleteDelegate::CreateUObject(
+	FOnStartSessionCompleteDelegate OnStartSessionCompleteDelegate = FOnStartSessionCompleteDelegate::CreateUObject(
 		this, &ThisClass::OnStartSessionComplete);
-	FDelegateHandle StartSessionCompleteDelegateHandle;
+	FDelegateHandle OnStartSessionCompleteDelegateHandle;
 
-	FOnDestroySessionCompleteDelegate DestroySessionCompleteDelegate = FOnDestroySessionCompleteDelegate::CreateUObject(
+	FOnDestroySessionCompleteDelegate OnDestroySessionCompleteDelegate = FOnDestroySessionCompleteDelegate::CreateUObject(
 		this, &ThisClass::OnDestroySessionComplete);
-	FDelegateHandle DestroySessionCompleteDelegateHandle;
+	FDelegateHandle OnDestroySessionCompleteDelegateHandle;
 };
