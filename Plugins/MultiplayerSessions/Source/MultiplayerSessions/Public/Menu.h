@@ -27,7 +27,7 @@ protected:
 
 	UFUNCTION()
 	void MssOnCreateSessionComplete(bool bWasSuccessful);
-	void MssOnFindSessionsComplete(TArray<FOnlineSessionSearchResult>& SearchResults, bool bWasSuccessful);
+	void MssOnFindSessionsComplete(const TArray<FOnlineSessionSearchResult>& SearchResults, bool bWasSuccessful);
 	void MssOnJoinSessionComplete(EOnJoinSessionCompleteResult::Type Result);
 	UFUNCTION()
 	void MssOnStartSessionComplete(bool bWasSuccessful);
@@ -48,7 +48,7 @@ private:
 
 	UFUNCTION()
 	void JoinButtonClicked();
-	
+
 	void MenuTearDown();
 
 	int32 NumPublicConnections = 4;

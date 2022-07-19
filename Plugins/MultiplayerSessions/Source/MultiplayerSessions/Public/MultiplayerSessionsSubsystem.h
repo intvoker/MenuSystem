@@ -10,7 +10,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMssOnCreateSessionCompleteDelegate, bool, bWasSuccessful);
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FMssOnFindSessionsCompleteDelegate,
-                                     TArray<FOnlineSessionSearchResult>& SearchResults, bool bWasSuccessful);
+                                     const TArray<FOnlineSessionSearchResult>& SearchResults, bool bWasSuccessful);
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FMssOnJoinSessionCompleteDelegate, EOnJoinSessionCompleteResult::Type Result)
 
@@ -50,6 +50,7 @@ protected:
 private:
 	IOnlineSessionPtr OnlineSessionInterface;
 	TSharedPtr<FOnlineSessionSettings> SessionSettings;
+	TSharedPtr<FOnlineSessionSearch> SessionSearch;
 
 	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(
 		this, &ThisClass::OnCreateSessionComplete);
