@@ -29,19 +29,19 @@ void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPublicConnections, FS
 	OnCreateSessionCompleteDelegateHandle = OnlineSessionInterface->AddOnCreateSessionCompleteDelegate_Handle(
 		OnCreateSessionCompleteDelegate);
 
-	SessionSettings = MakeShareable(new FOnlineSessionSettings());
-	SessionSettings->bIsLANMatch = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
-	SessionSettings->NumPublicConnections = NumPublicConnections;
-	SessionSettings->bAllowJoinInProgress = true;
-	SessionSettings->bAllowJoinViaPresence = true;
-	SessionSettings->bShouldAdvertise = true;
-	SessionSettings->bUsesPresence = true;
-	SessionSettings->bUseLobbiesIfAvailable = true;
-	SessionSettings->Set(FName("MatchType"), MatchType, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	OnlineSessionSettings = MakeShareable(new FOnlineSessionSettings());
+	OnlineSessionSettings->bIsLANMatch = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
+	OnlineSessionSettings->NumPublicConnections = NumPublicConnections;
+	OnlineSessionSettings->bAllowJoinInProgress = true;
+	OnlineSessionSettings->bAllowJoinViaPresence = true;
+	OnlineSessionSettings->bShouldAdvertise = true;
+	OnlineSessionSettings->bUsesPresence = true;
+	OnlineSessionSettings->bUseLobbiesIfAvailable = true;
+	OnlineSessionSettings->Set(FName("MatchType"), MatchType, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 	if (!OnlineSessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession,
-	                                           *SessionSettings))
+	                                           *OnlineSessionSettings))
 	{
 		OnlineSessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegateHandle);
 		MssOnCreateSessionCompleteDelegate.Broadcast(false);
@@ -58,13 +58,14 @@ void UMultiplayerSessionsSubsystem::FindSessions(int32 MaxSearchResults)
 	OnFindSessionsCompleteDelegateHandle = OnlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(
 		OnFindSessionsCompleteDelegate);
 
-	SessionSearch = MakeShareable(new FOnlineSessionSearch());
-	SessionSearch->MaxSearchResults = MaxSearchResults;
-	SessionSearch->bIsLanQuery = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";;
-	SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+	OnlineSessionSearch = MakeShareable(new FOnlineSessionSearch());
+	OnlineSessionSearch->MaxSearchResults = MaxSearchResults;
+	OnlineSessionSearch->bIsLanQuery = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";;
+	OnlineSessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
 
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-	if (!OnlineSessionInterface->FindSessions(*LocalPlayer->GetPreferredUniqueNetId(), SessionSearch.ToSharedRef()))
+	if (!OnlineSessionInterface->FindSessions(*LocalPlayer->GetPreferredUniqueNetId(),
+	                                          OnlineSessionSearch.ToSharedRef()))
 	{
 		OnlineSessionInterface->ClearOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegateHandle);
 		MssOnFindSessionsCompleteDelegate.Broadcast(TArray<FOnlineSessionSearchResult>(), false);
@@ -116,7 +117,7 @@ void UMultiplayerSessionsSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
 	}
 
 	OnlineSessionInterface->ClearOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegateHandle);
-	MssOnFindSessionsCompleteDelegate.Broadcast(SessionSearch->SearchResults, bWasSuccessful);
+	MssOnFindSessionsCompleteDelegate.Broadcast(OnlineSessionSearch->SearchResults, bWasSuccessful);
 }
 
 void UMultiplayerSessionsSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)

@@ -49,8 +49,8 @@ protected:
 
 private:
 	IOnlineSessionPtr OnlineSessionInterface;
-	TSharedPtr<FOnlineSessionSettings> SessionSettings;
-	TSharedPtr<FOnlineSessionSearch> SessionSearch;
+	TSharedPtr<FOnlineSessionSettings> OnlineSessionSettings;
+	TSharedPtr<FOnlineSessionSearch> OnlineSessionSearch;
 
 	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(
 		this, &ThisClass::OnCreateSessionComplete);
