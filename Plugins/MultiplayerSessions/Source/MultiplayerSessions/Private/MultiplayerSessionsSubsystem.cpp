@@ -23,7 +23,12 @@ void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPublicConnections, FS
 
 	if (OnlineSessionInterface->GetNamedSession(NAME_GameSession))
 	{
-		OnlineSessionInterface->DestroySession(NAME_GameSession);
+		bCreateSessionOnDestroy = true;
+		NumPublicConnectionsFromParam = NumPublicConnections;
+		MatchTypeFromParam = MatchType;
+
+		DestroySession();
+		return;
 	}
 
 	OnCreateSessionCompleteDelegateHandle = OnlineSessionInterface->AddOnCreateSessionCompleteDelegate_Handle(
@@ -97,6 +102,19 @@ void UMultiplayerSessionsSubsystem::StartSession()
 
 void UMultiplayerSessionsSubsystem::DestroySession()
 {
+	if (!OnlineSessionInterface.IsValid())
+	{
+		return;
+	}
+
+	OnDestroySessionCompleteDelegateHandle = OnlineSessionInterface->AddOnDestroySessionCompleteDelegate_Handle(
+		OnDestroySessionCompleteDelegate);
+
+	if (!OnlineSessionInterface->DestroySession(NAME_GameSession))
+	{
+		OnlineSessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(OnDestroySessionCompleteDelegateHandle);
+		MssOnDestroySessionCompleteDelegate.Broadcast(false);
+	}
 }
 
 void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
@@ -138,4 +156,18 @@ void UMultiplayerSessionsSubsystem::OnStartSessionComplete(FName SessionName, bo
 
 void UMultiplayerSessionsSubsystem::OnDestroySessionComplete(FName SessionName, bool bWasSuccessful)
 {
+	if (!OnlineSessionInterface.IsValid())
+	{
+		return;
+	}
+
+	OnlineSessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegateHandle);
+
+	if (bWasSuccessful && bCreateSessionOnDestroy)
+	{
+		bCreateSessionOnDestroy = false;
+		CreateSession(NumPublicConnectionsFromParam, MatchTypeFromParam);
+	}
+
+	MssOnDestroySessionCompleteDelegate.Broadcast(bWasSuccessful);
 }

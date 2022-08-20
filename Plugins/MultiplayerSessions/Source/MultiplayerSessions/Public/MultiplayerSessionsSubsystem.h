@@ -72,4 +72,8 @@ private:
 		FOnDestroySessionCompleteDelegate::CreateUObject(
 			this, &ThisClass::OnDestroySessionComplete);
 	FDelegateHandle OnDestroySessionCompleteDelegateHandle;
+
+	bool bCreateSessionOnDestroy = false;
+	int32 NumPublicConnectionsFromParam;
+	FString MatchTypeFromParam;
 };
