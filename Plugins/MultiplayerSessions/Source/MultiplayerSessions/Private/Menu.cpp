@@ -99,6 +99,8 @@ void UMenu::MssOnCreateSessionComplete(bool bWasSuccessful)
 			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Red,
 			                                 FString(TEXT("Create Session Failed")), false);
 		}
+
+		HostButton->SetIsEnabled(true);
 	}
 }
 
@@ -119,6 +121,11 @@ void UMenu::MssOnFindSessionsComplete(const TArray<FOnlineSessionSearchResult>& 
 			return;
 		}
 	}
+
+	if (!bWasSuccessful || SearchResults.Num() == 0)
+	{
+		JoinButton->SetIsEnabled(true);
+	}
 }
 
 void UMenu::MssOnJoinSessionComplete(EOnJoinSessionCompleteResult::Type Result)
@@ -136,6 +143,11 @@ void UMenu::MssOnJoinSessionComplete(EOnJoinSessionCompleteResult::Type Result)
 			}
 		}
 	}
+
+	if (Result != EOnJoinSessionCompleteResult::Success)
+	{
+		JoinButton->SetIsEnabled(true);
+	}
 }
 
 void UMenu::MssOnStartSessionComplete(bool bWasSuccessful)
@@ -148,6 +160,8 @@ void UMenu::MssOnDestroySessionComplete(bool bWasSuccessful)
 
 void UMenu::HostButtonClicked()
 {
+	HostButton->SetIsEnabled(false);
+	
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow,
@@ -162,6 +176,8 @@ void UMenu::HostButtonClicked()
 
 void UMenu::JoinButtonClicked()
 {
+	JoinButton->SetIsEnabled(false);
+
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 5.f, FColor::Yellow,
