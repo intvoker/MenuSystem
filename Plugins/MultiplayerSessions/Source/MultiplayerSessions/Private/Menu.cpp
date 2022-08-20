@@ -8,10 +8,11 @@
 #include "OnlineSubsystem.h"
 #include "Components/Button.h"
 
-void UMenu::MenuSetup(int32 NumPublicConnectionsParam, FString MatchTypeParam)
+void UMenu::MenuSetup(int32 NumPublicConnectionsParam, FString MatchTypeParam, FString PathToLobbyParam)
 {
 	NumPublicConnections = NumPublicConnectionsParam;
 	MatchType = MatchTypeParam;
+	PathToLobby = PathToLobbyParam;
 
 	AddToViewport();
 	SetVisibility(ESlateVisibility::Visible);
@@ -88,7 +89,7 @@ void UMenu::MssOnCreateSessionComplete(bool bWasSuccessful)
 
 		if (UWorld* World = GetWorld())
 		{
-			World->ServerTravel(FString("/Game/ThirdPerson/Maps/LobbyMap?listen"));
+			World->ServerTravel(FString::Printf(TEXT("%s?listen"), *PathToLobby));
 		}
 	}
 	else
